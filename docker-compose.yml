@@ -1,0 +1,44 @@
+version: '2'
+services:
+  ansible-master:
+    extends:
+      file: common.yml
+      service: ansible-ubuntu
+    container_name: ansible-master
+    hostname: ansible-master
+    ports:
+      - '2220:22'
+    volumes:
+      - ansible-data-volume:/home
+    networks:
+      - ansible-network
+  ansible-node1:
+    extends:
+      file: common.yml
+      service: ansible-ubuntu
+    container_name: ansible-node1
+    hostname: ansible-node1
+    ports:
+      - '2221:22'
+    volumes:
+      - ansible-data-volume:/home
+    networks:
+      - ansible-network
+  ansible-node2:
+    extends:
+      file: common.yml
+      service: ansible-ubuntu
+    container_name: ansible-node2
+    hostname: ansible-node2
+    ports:
+      - '2222:22'
+    volumes:
+      - ansible-data-volume:/home
+    networks:
+      - ansible-network
+volumes:
+  ansible-data-volume:
+    driver: local
+networks:
+  ansible-network:
+    driver: bridge

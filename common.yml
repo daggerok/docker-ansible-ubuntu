@@ -1,0 +1,12 @@
+version: '2'
+services:
+  ansible-ubuntu:
+    image: 'daggerok/ansible-ubuntu:v6'
+    user: mak
+    working_dir: /home/mak
+    ports:
+      - 22
+    volumes:
+      - '~/.ssh/id_rsa:/home/mak/.ssh/id_rsa:ro'
+      - '~/.ssh/id_rsa.pub:/home/mak/.ssh/id_rsa.pub:ro'
+      - '~/.ssh/id_rsa.pub:/home/mak/.ssh/authorized_keys:ro'
