@@ -71,6 +71,25 @@ ansible all -i hosts -u root -m ping
 }
 ----
 
+== apt install, service start
+
+[bash,fish]
+----
+ansible all -i hosts -u root -m setup
+
+ansible all -i hosts -u root -m apt -a name="iputils-ping state=latest" -b
+# check: ping google.com
+
+ansible all -i ./hosts -u root -m apt -a name="nginx state=latest" -b
+# check result: which nginx # output: /usr/sbin/nginx
+
+ansible all -i ./hosts -u root -m service -a name="nginx state=started" -b
+# check on nodes: curl localhost
+
+# self
+ansible localhost -m ping
+----
+
 == cleanup
 
 [bash,fish]
