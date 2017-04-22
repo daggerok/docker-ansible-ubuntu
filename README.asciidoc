@@ -1,0 +1,79 @@
+= installation
+
+== network
+
+[bash,fish]
+----
+docker network create --subnet=10.1.1.0/16 ansible
+# output:
+b9c3aae677e10d45297804401b37c274120237144ce2b7e682c0f403baaea5ca
+----
+
+== nodes (10.1.1.2, 10.1.1.3)
+
+[bash,fish]
+----
+docker run --rm -it --net b9c3 --ip 10.1.1.2 \
+-v ~/.ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro ubuntu:16.04 sh -c \
+"apt update; apt install -y iputils-ping openssh-server net-tools curl vim python; sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config; service ssh start; /bin/bash"
+
+docker run --rm -it --net b9c3 --ip 10.1.1.3 \
+-v ~/.ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro ubuntu:16.04 sh -c \
+"apt update; apt install -y openssh-server python; sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config; service ssh start; /bin/bash"
+----
+
+== ansible manager (10.1.1.1)
+
+[bash,fish]
+----
+docker run --rm -it --net b9c3 --ip 10.1.1.1 \
+-v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
+-v $PWD/ansible:/etc/ansible \
+ubuntu:16.04 sh -c \
+"apt update; apt install -y iputils-ping openssh-client net-tools curl software-properties-common vim; apt-add-repository ppa:ansible/ansible -y; apt update; apt install -y ansible; /bin/bash"
+----
+
+== check if ssh is working
+
+[bash,fish]
+----
+ssh 10.1.1.2
+exit
+ssh 10.1.1.3
+exit
+----
+
+== test ansible
+
+[bash,fish]
+----
+mkdir project; cd project
+
+vim ./hosts
+...
+[node1]
+10.1.1.2
+
+[node2]
+10.1.1.3
+...
+:wq!
+
+ansible all -i hosts -u root -m ping
+# output:
+10.1.1.3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+10.1.1.2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+----
+
+== cleanup
+
+[bash,fish]
+----
+docker network rm ansible
+----
