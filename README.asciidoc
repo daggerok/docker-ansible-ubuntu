@@ -90,6 +90,21 @@ ansible all -i ./hosts -u root -m service -a name="nginx state=started" -b
 ansible localhost -m ping
 ----
 
+== doc / help
+
+[bash,fish]
+----
+ansible-doc -l|grep <query>
+
+ansible-doc -l|grep copy
+copy                               Copies files to remote locations.
+...
+
+ansible-doc copy # show module documentation
+
+ansible-doc copy -s # show snippet example
+----
+
 == cleanup
 
 [bash,fish]
