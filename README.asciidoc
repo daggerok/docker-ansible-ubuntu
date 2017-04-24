@@ -22,25 +22,16 @@ b9c3aae677e10d45297804401b37c274120237144ce2b7e682c0f403baaea5ca
 
 [source,bash]
 ----
-docker run --rm -it --net b9c3 --ip 10.1.1.2 \
--v $PWD/scripts:/opt:ro \
--v ~/.ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro \
-ubuntu:16.04 sh -c "/bin/bash /opt/install-node.bash"
+bash start-node.bash 10.1.1.2
 
-docker run --rm -it --net b9c3 --ip 10.1.1.3 \
--v $PWD/scripts:/opt:ro \
--v ~/.ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro \
-ubuntu:16.04 sh -c "/bin/bash /opt/install-node.bash"
+bash start-node.bash 10.1.1.3
 ----
 
 == ansible manager (10.1.1.1)
 
 [source,bash]
 ----
-docker run --rm -it --net b9c3 --ip 10.1.1.1 \
--v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
--v $PWD/scripts:/opt \
-ubuntu:16.04 sh -c "/bin/bash /opt/install-manager.bash"
+bash start-manager.bash 10.1.1.1
 ----
 
 == check if ssh is working
@@ -57,9 +48,7 @@ exit
 
 [source,bash]
 ----
-mkdir project; cd project
-
-vim ./hosts
+vim /opt/hosts
 ...
 [node1]
 10.1.1.2
@@ -69,7 +58,7 @@ vim ./hosts
 ...
 :wq!
 
-ansible all -i hosts -u root -m ping
+ansible all -i /opt/hosts -u root -m ping
 # output:
 10.1.1.3 | SUCCESS => {
     "changed": false,
@@ -85,15 +74,15 @@ ansible all -i hosts -u root -m ping
 
 [source,bash]
 ----
-ansible all -i hosts -u root -m setup
+ansible all -i /opt/hosts -u root -m setup
 
-ansible all -i hosts -u root -m apt -a name="iputils-ping state=latest" -b
+ansible all -i /opt/hosts -u root -m apt -a name="iputils-ping state=latest" -b
 # check: ping google.com
 
-ansible all -i ./hosts -u root -m apt -a name="nginx state=latest" -b
+ansible all -i /opt/hosts -u root -m apt -a name="nginx state=latest" -b
 # check result: which nginx # output: /usr/sbin/nginx
 
-ansible all -i ./hosts -u root -m service -a name="nginx state=started" -b
+ansible all -i /opt/hosts -u root -m service -a name="nginx state=started" -b
 # check on nodes: curl localhost
 
 # self
