@@ -22,16 +22,16 @@ b9c3aae677e10d45297804401b37c274120237144ce2b7e682c0f403baaea5ca
 
 [source,bash]
 ----
-bash start-node.bash 10.1.1.2
+bash start-node.bash b9c3 10.1.1.2
 
-bash start-node.bash 10.1.1.3
+bash start-node.bash b9c3 10.1.1.3
 ----
 
 == ansible manager (10.1.1.1)
 
 [source,bash]
 ----
-bash start-manager.bash 10.1.1.1
+bash start-manager.bash b9c3 10.1.1.1
 ----
 
 == check if ssh is working

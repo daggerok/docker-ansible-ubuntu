@@ -19,12 +19,12 @@ if [  ! -d "$SCRIPTS" ]; then
   exit 1
 fi
 
-if [ "$1" == "" ]; then
-  echo "usage: \`$0 \$MANAGER_IP\`"
+if [ "$1" == "" ] || [ "$2" == "" ]; then
+  echo "usage: \`$0 \$NETWORK \$MANAGER_IP\`"
   exit 1
 fi
 
-docker run --rm -it --net b9c3 --ip $1 \
+docker run --rm -it --net $1 --ip $2 \
 -v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
 -v $PWD/scripts:/opt \
 ubuntu:16.04 sh -c "/bin/bash /opt/install-manager.bash"
